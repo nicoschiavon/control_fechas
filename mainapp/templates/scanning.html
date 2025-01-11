@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Buscar Producto por Scanning:</h2>
+<form method="POST" action="">
+    {% csrf_token %}
+    <label for="scanning">Scanning:</label>
+    <input type="text" id="scanning" name="scanning" required>
+    <button type="submit">Buscar</button>
+</form>
+
+{% if producto %}
+    <h1>Producto encontrado:</h1>
+    <p>Nombre: {{ producto.nombre }}</p>
+    <p>Scanning: {{ producto.scanning }}</p>
+    <p>Descripción: {{ producto.descripcion }}</p>
+    <a href="{% url "agregar_fecha" producto.id %}">Agregar Vencimiento</a>
+    <a href="{% url "agregar_producto" %}">Agregar otro producto</a>
+ 
+{% elif scanning %}
+    <h2>No se encontró un producto con el scanning: {{ scanning }}</h2>
+    <a href="{% url "agregar_producto" %}">Agregar</a>
+{% endif %}
+{% endblock content %}
+
+
+

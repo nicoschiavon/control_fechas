@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<h1>Agregar Producto</h1>
+<form action="agregar_producto" method="POST"> 
+    {% csrf_token %}
+    {{ form_producto.as_p }}
+    <button type="submit">Agregar</button>
+</form>
+
+{% endblock content %}

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<h1>Control de fechas:</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Fecha de Vencimiento</th>
+            <th>Dias para Retiro</th>
+            <th>Retirar</th>
+            <th>Pedir Precio</th>
+            <th>Eliminar</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in fechas_dias %}
+        <tr>
+            <td>{{ item.producto }}</td>
+            <td>{{ item.fecha }}</td>
+            <td>{{ item.dias }}</td>
+            <td>
+                {% if item.retirar %}
+                    <p>Si</p>
+                    {% else %}
+                    <p>No</p>
+                {% endif %}
+            </td>
+            <td>
+                {% if item.precio %}
+                    <p>Si</p>
+                    {% else %}
+                    <p>No</p>
+                {% endif %}
+            </td>
+            <td>
+                <button class="btn btn-danger btn-sm" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#confirmDeleteModal" 
+                        data-id="{{ item.id }}" 
+                        data-fecha="{{ item.fecha }}">
+                    Eliminar
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+
+        
+    </tbody>
+</table>
+
+<!-- Modal de Confirmación -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteLabel">Confirmar eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de que deseas eliminar la fecha de vencimiento: <strong><span id="fechaDetalle"></span></strong>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <!-- El enlace para confirmar la eliminación se actualizará dinámicamente -->
+                <a id="confirmDeleteBtn" href="#" class="btn btn-danger">Eliminar</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteModal = document.getElementById('confirmDeleteModal');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const fechaDetalle = document.getElementById('fechaDetalle');
+
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget; // Botón que activó el modal
+            const fechaId = button.getAttribute('data-id'); // ID de la fecha
+            const fechaText = button.getAttribute('data-fecha'); // Texto de la fecha
+
+            // Actualizar los elementos del modal
+            fechaDetalle.textContent = fechaText;
+            confirmDeleteBtn.href = "{% url 'eliminar_fecha' 0 %}".replace('0', fechaId); // Enlace dinámico
+        });
+    });
+</script>
+
+
+
+{% endblock content %}

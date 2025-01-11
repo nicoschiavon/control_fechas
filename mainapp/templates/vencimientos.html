@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h1>Vencimientos:</h1>
+{% if fechas %}
+    <ul>
+        {% for fecha in fechas %}
+            <li>{{ fecha.fecha }} - {{ fecha.producto.nombre }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No hay vencimientos próximos</p>
+{% endif %}
+{% endblock content %}

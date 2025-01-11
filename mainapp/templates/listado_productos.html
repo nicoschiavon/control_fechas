@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="mb-3">
+    <input type="text" id="searchInput" class="form-control" placeholder="Buscar producto...">
+</div>
+
+<h1>Productos:</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Scanning</th>
+            <th>Producto</th>
+            <th>Agregar Fecha</th>
+            <th>Modificar Producto</th>
+            <th>Eliminar</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for producto in productos %}
+        <tr>
+            <td>{{ producto.scanning }}</td>
+            <td>{{ producto.nombre }}</td>
+            <td>
+                <a href="{% url 'agregar_fecha' producto.id %}" class="btn btn-primary btn-sm">Agregar Fecha</a>
+            </td>
+            <td>
+                <a href="{% url 'modificar_producto' producto.id %}" class="btn btn-warning btn-sm">Modificar</a>
+            </td>
+            <td>
+                <button class="btn btn-danger btn-sm" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#confirmDeleteModal" 
+                        data-id="{{ producto.id }}" 
+                        data-nombre="{{ producto.nombre }}">
+                    Eliminar
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% comment %} modal de confimacion {% endcomment %}
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteLabel">Confirmar eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Está seguro que desea eliminar el producto <span id="nombreProducto"></span>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <a href="" id="deleteButton" class="btn btn-danger">Eliminar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Referencias al buscador y la tabla
+        const searchInput = document.getElementById('searchInput');
+        const tableRows = document.querySelectorAll('table tbody tr');
+
+        // Filtrar productos
+        searchInput.addEventListener('input', function () {
+            const searchValue = searchInput.value.toLowerCase();
+
+            tableRows.forEach(row => {
+                const productName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                if (productName.includes(searchValue)) {
+                    row.style.display = ''; // Mostrar fila
+                } else {
+                    row.style.display = 'none'; // Ocultar fila
+                }
+            });
+        });
+
+        // Configuración del modal
+        var deleteModal = document.getElementById('confirmDeleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var id = button.getAttribute('data-id');
+            var nombre = button.getAttribute('data-nombre');
+            var modalBody = deleteModal.querySelector('.modal-body');
+            var nombreProducto = modalBody.querySelector('#nombreProducto');
+            var deleteButton = deleteModal.querySelector('#deleteButton');
+            nombreProducto.textContent = nombre;
+            deleteButton.href = '/eliminar_producto/' + id;
+        });
+    });
+</script>
+
+{% endblock content %}
