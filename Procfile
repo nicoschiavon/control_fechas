@@ -1,1 +1,1 @@
-web: gunicorn control_fechas.wsgi
+web: gunicorn mainapp.wsgi
