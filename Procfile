@@ -1,1 +1,1 @@
-web: gunicorn nombre_de_tu_proyecto.wsgi
+web: gunicorn control_fechas.wsgi
