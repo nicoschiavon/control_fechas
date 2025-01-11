@@ -27,7 +27,7 @@ SECRET_KEY = '835d45dc9412f1bf5bab74b501a4595b'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['control-fechas.onrender.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
