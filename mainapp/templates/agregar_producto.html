@@ -2,12 +2,52 @@
 {% load static %}
 
 {% block content %}
-
 <h1>Agregar Producto</h1>
+
+<!-- Formulario para ingresar el nombre y tipo de producto -->
 <form action="agregar_producto" method="POST"> 
     {% csrf_token %}
     {{ form_producto.as_p }}
     <button type="submit">Agregar</button>
 </form>
 
+<!-- Contenedor para el escaneo de código de barras -->
+<div id="scanner-container">
+    <h3>Escanear Código de Barras</h3>
+    <div id="scanner"></div>
+    <button id="start-scanning">Iniciar Escaneo</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
+<script>
+    // Iniciar QuaggaJS para escanear el código de barras
+    document.getElementById('start-scanning').addEventListener('click', function() {
+        Quagga.init({
+            inputStream: {
+                type: "LiveStream",
+                constraints: {
+                    facingMode: "environment"
+                },
+                target: document.querySelector('#scanner') // El contenedor donde mostrar la cámara
+            },
+            decoder: {
+                readers: ["code_128_reader", "ean_reader", "ean_8_reader"] // Tipos de códigos soportados
+            }
+        }, function(err) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            Quagga.start();
+        });
+
+        // Detectar el código de barras escaneado
+        Quagga.onDetected(function(result) {
+            const scanningField = document.querySelector('input[name="scanning"]');
+            const barcode = result.codeResult.code; // El código detectado
+            scanningField.value = barcode; // Establecer el valor del campo 'scanning'
+            Quagga.stop(); // Detener el escaneo una vez que se detecta el código
+        });
+    });
+</script>
 {% endblock content %}
